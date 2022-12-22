@@ -26,8 +26,7 @@ export const searchImage = async (query, page) => {
       throw new Error('Something goes wrong');
     }
 
-    const { hits } = response.data;
-    return hits;
+    return response.data;
   } catch (error) {
     console.log(error.message);
   }

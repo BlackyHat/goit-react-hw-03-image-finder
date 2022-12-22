@@ -10,6 +10,7 @@ class ImgFinder extends Component {
   state = {
     page: 1,
     query: '',
+    totalPages: 0,
     images: [],
     isLoading: false,
   };
@@ -19,17 +20,18 @@ class ImgFinder extends Component {
 
     if (prevState.page !== page) {
       this.setState({ isLoading: true });
-      const imgs = await API.searchImage(query, page);
+      const { hits } = await API.searchImage(query, page);
       this.setState(prevState => ({
-        images: [...prevState.images, ...imgs],
+        images: [...prevState.images, ...hits],
         isLoading: false,
       }));
     }
     if (prevState.query !== query) {
       this.setState({ isLoading: true });
-      const imgs = await API.searchImage(query, page);
+      const { hits, totalHits } = await API.searchImage(query, page);
       this.setState({
-        images: imgs,
+        images: hits,
+        totalPages: Math.floor(totalHits / API.PER_PAGE),
         isLoading: false,
       });
     }
@@ -49,13 +51,14 @@ class ImgFinder extends Component {
   };
 
   render() {
-    const { images, isLoading } = this.state;
+    const { images, isLoading, totalPages, page } = this.state;
+    const isShowLoadMore = totalPages > 0 && totalPages > page;
     return (
       <>
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={images} />
         {isLoading && <Loader />}
-        {images.length > 0 && <Button onLoadMore={this.loadMore} />}
+        {isShowLoadMore && <Button onLoadMore={this.loadMore} />}
       </>
     );
   }
