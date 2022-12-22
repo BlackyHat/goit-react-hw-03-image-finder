@@ -4,7 +4,7 @@ import './Styles.css';
 export const App = () => {
   return (
     <>
-      <ImgFinder />
+      <ImgFinder className="App" />
     </>
   );
 };
